@@ -41,7 +41,7 @@ collections = {
 	}
 };
 
-filesaver = new Filesaver( options );
+filesaver = Filesaver( collections );
 
 filesaver( 'images', 'path/to/origin', function (err, data) {
 	// do something with data
