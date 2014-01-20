@@ -44,9 +44,8 @@ filesaver = Filesaver( collections );
 filesaver( 'images', 'path/to/origin', function (err, data) {
 	// do something with data
 	// data signature:
-	// - origin
-	// - destiny
-	// - collection
+	// - filename
+	// - path to filename
 });
 
 ```

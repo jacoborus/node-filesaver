@@ -1,6 +1,19 @@
+var Filesaver, collections, safename, fs;
 
-module.exports = function (collections) {
-	var cols, filesaver, save;
+// get dependencies
+safename = require( './safename' );
+fs = require( 'fs' );
+
+
+
+/**
+ * Filesaver constructor
+ * @param {Object} collections Collections schema
+ */
+
+Filesaver = function (cols) {
+	// Store colelctions in private
+	collections = cols;
 
 	// check for existing folders
 	for (col in collections) {
@@ -9,69 +22,144 @@ module.exports = function (collections) {
 			fs.mkdir( collections[col].path );
 		}
 	}
+};
 
 
-	save = function (opts) {
-		var destiny = '' + collections[opts.collection].path + '/' opts.replace;
-		// read origin
-		fs.readFile( opts.origin, function (err, data) {
-			if (err) {
-				opts.callback( err );
-			} else {
-				// write file
-				fs.writeFile( destiny, data, function (err2) {
-					if (err2) {
-						opts.callback( err2 );
-					} else {
-						callback( null, {
-							origin: opts.origin,
-							destiny: destiny,
-							collection : opts.collection 
-						});
-					}
-				});
-			}
-		});
+
+/**
+ * Add a new collection setup
+ * @param  {String}   name       name of new collection
+ * @param  {Object}   collection Collection schema
+ * @param  {Function} callback   no signature callback
+ */
+
+Filesaver.prototype.collection = function (name, collection, callback) {
+	// create folder if not exists
+	if (!fs.existsSync( collection.path )) {
+		fs.mkdir( collection.path );
 	}
+	// add collection
+	collections[name] = collection;
+	// callback if exists
+	if (callback){
+		callback();
+	}
+}
+
+
+
+/**
+ * Add a new file without overwrite anyone
+ * @param {String}   collection Name of collection to insert the file
+ * @param {String}   origin     path to origin file
+ * @param {String}   target     name target file
+ * @param {Function} callback   Signature: error, data. Data signature:{filename, filepath}
+ */
+
+Filesaver.prototype.add = function (collection, origin, target, callback) {
+
+	var _this = this, rename, filename, destiny;
 
 	/**
-	 * Stores files in collections/folders
-	 * @param  {String}   collection name of the collection to store the file
-	 * @param  {String}   origin     path to origin file
-	 * @param  {String}   replace    (optional) path to file to replace
-	 * @param  {Function} callback   Signature: err, data
+	 * +1 to filename sufix if file exists, else callback
+	 * @param  {String} path path to check
 	 */
+	rename = function (path) {
+		if (fs.exists( path )) {
+			path = path.split( '_' );
+			len = path.length;
+			path[len - 1] = 1 + path[len - 1];
+			checker( path.join( ), callback);
+		} else {
+			return _this.overwrite( collection, origin, path, callback );
+		}
+	};
+
+	// get filename and destiny
+	filename = origin.split('/').pop();
+	destiny = '' + collections[collection].path + '/' + filename;
 	
-	filesaver = function (collection, origin, replace, callback) {
-		var opts = {};
-		//  check collection and origin arguments
-		if ((typeof collection === 'string') && (typeof origin === 'string')) {
-			if (collections[collection]) {
-				opts.collection = collection;
-				opts.origin = origin;
-				
-				// check if 'replace' and 'callback' arguments  were sent
-				if (!callback) {
-					if (typeof replace === 'function') {
-						opts.callback = replace;
-						opts.replace = false;
-					} else if (typeof replace === 'string') {
-						opts.replace = replace;
-						opt.callback = false;
+	// check if file exists
+	if (fs.exists( destiny )) {
+		rename( '' + destiny + '_1', callback );
+	} else {
+		// write file
+		return this.overwrite( collection, origin, destiny, callback );
+	}
+}
+
+
+
+/**
+ * Remove old file and then add the new one
+ * @param  {[type]}   collection [description]
+ * @param  {[type]}   origin     [description]
+ * @param  {[type]}   target     [description]
+ * @param  {Function} callback   [description]
+ */
+
+Filesaver.prototype.replace = function (collection, origin, target, callback) {
+	// set target
+	var filename = origin.split('/').pop();
+	var destiny = '' + collections[collection].path + '/' + filename;
+	var target = '' + collections[collection].path + '/' + target;
+
+	// read origin
+	fs.readFile( origin, function (err, data) {
+		if (err) {
+			callback( err );
+		} else {
+			// remove target file
+			fs.unlinkSync( target );
+			// write file
+			fs.writeFile( destiny, data, function (err2) {
+				if (callback) {
+					if (err2) {
+						callback( err2 );
 					} else {
-						opts.replace = opt.origin.split('/').pop();
+						callback( null, {
+							filename: filename,
+							filepath: destiny
+						});
 					}
 				}
-				save( opts );
-
-			} else {
-				callback( 'Collection not found' );
-			}
-		} else {
-			callback( 'Collection or origin no valid' );
+			});
 		}
-	}
-	
-	return filesaver;
-
+	});
 }
+
+
+
+/**
+ * Write or overwrite file
+ * @param  {String}   collection name of parent collection
+ * @param  {String}   origin     path to origin file
+ * @param  {String}   target     name of target file
+ * @param  {Function} callback   Signature: error, data. Data signature:{filename, filepath}
+ */
+
+Filesaver.prototype.overwrite = function (collection, origin, target, callback) {
+	// set target
+	var destiny = '' + collections[collection].path + '/' + target;
+
+	// read origin
+	fs.readFile( origin, function (err, data) {
+		if (err) {
+			callback( err );
+		} else {
+			// write file
+			fs.writeFile( destiny, data, function (err2) {
+				if (err2) {
+					callback( err2 );
+				} else {
+					callback( null, {
+						filename: destiny.split('/').pop(),
+						filepath: destiny
+					});
+				}
+			});
+		}
+	});
+}
+
+module.exports = Filesaver;
