@@ -26,7 +26,7 @@ var Filesaver = require( 'filesaver' );
 
 ## API
 
-### filesaver#Filesaver(collections)
+### Filesaver#(collections)
 
 Filesaver constructor.
 
@@ -53,7 +53,9 @@ Add a new collection
 Example:
 
 ```js
-filesaver.collection( 'documents', )
+filesaver.collection( 'documents', './path/to/folder', function () {
+    // do something
+});
 ```
 
 **Parameters**

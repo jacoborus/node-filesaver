@@ -43,7 +43,9 @@ Filesaver = function (cols) {
  * Example:
  *
  * ```js
- * filesaver.collection( 'documents', )
+ * filesaver.collection( 'documents', './path/to/folder', function () {
+ *     // do something
+ * });
  * ```
  * @param  {String}   name       name of new collection
  * @param  {Object}   collection Collection schema
