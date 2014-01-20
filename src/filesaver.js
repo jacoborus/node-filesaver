@@ -1,6 +1,4 @@
 
-var safename = require( './safename' );
-
 module.exports = function (collections) {
 	var cols, filesaver, save;
 

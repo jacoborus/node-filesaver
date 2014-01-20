@@ -19,7 +19,6 @@ $ npm install filesaver
 - Manage collections in folders
 - Stores files by date
 - Folder and filename patterns
-- Abstract file names
 - Classify files by filetype
 
 
@@ -32,8 +31,7 @@ Filesaver = require( 'filesaver' );
 
 collections = {
 	images : {
-		path: 'path/to/folder',
-		abstract: true
+		path: 'path/to/folder'
 	},
 	documents : {
 		path: 'path/to/documents',
@@ -49,7 +47,6 @@ filesaver( 'images', 'path/to/origin', function (err, data) {
 	// - origin
 	// - destiny
 	// - collection
-	// - renamed?
 });
 
 ```
