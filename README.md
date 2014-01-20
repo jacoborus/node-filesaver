@@ -26,7 +26,7 @@ var Filesaver = require( 'filesaver' );
 
 ## API
 
-### Filesaver(collections)
+### filesaver#Filesaver(collections)
 
 Filesaver constructor.
 
@@ -41,13 +41,12 @@ var filesaver = new Filesaver( collections );
 ```
 
 
-
 **Parameters**
 
 **collections**:  *Object*,  Collections schema
 
 
-### collection(name, collection, callback)
+### filesaver#collection(name, collection, callback)
 
 Add a new collection
 
@@ -57,62 +56,47 @@ Example:
 filesaver.collection( 'documents', )
 ```
 
-
 **Parameters**
-
-**name**:  *String*,  name of new collection
-
-**collection**:  *Object*,  Collection schema
-
-**callback**:  *Function*,  no signature callback
+- **name**:  *String*,  name of new collection
+- **collection**:  *Object*,  Collection schema
+- **callback**:  *Function*,  no signature callback
 
 
-### add(collection, origin, target, callback)
+### filesaver#add(collection, origin, target, callback)
 
 Add a new file without overwrite anyone
 
 
 **Parameters**
 
-**collection**:  *String*,  Name of collection to insert the file
+- **collection**:  *String*,  Name of collection to insert the file
+- **origin**:  *String*,  path to origin file
+- **target**:  *String*,  name target file
+- **callback**:  *Function*,  Signature: error, data. Data signature:{filename, filepath}
 
-**origin**:  *String*,  path to origin file
 
-**target**:  *String*,  name target file
-
-**callback**:  *Function*,  Signature: error, data. Data signature:{filename, filepath}
-
-### swap(collection, origin, target, callback)
+### filesaver#swap(collection, origin, target, callback)
 
 Remove old file and then add the new one
 
-
 **Parameters**
 
-**collection**:  *String*,  name of collection
+- **collection**:  *String*,  name of collection
+- **origin**:  *String*,  path to origin file
+- **target**:  *String*,  name of file to remove
+- **callback**:  *Function*,  Signature: error, data. Data signature:{filename, filepath}
 
-**origin**:  *String*,  path to origin file
-
-**target**:  *String*,  name of file to remove
-
-**callback**:  *Function*,  Signature: error, data. Data signature:{filename, filepath}
-
-
-### replace(collection, origin, target, callback)
+### filesaver#replace(collection, origin, target, callback)
 
 Write or overwrite file
 
 
 **Parameters**
 
-**collection**:  *String*,  name of parent collection
-
-**origin**:  *String*,  path to origin file
-
-**target**:  *String*,  name of target file
-
-**callback**:  *Function*,  Signature: error, data. Data signature:{filename, filepath}
-
+- **collection**:  *String*,  name of parent collection
+- **origin**:  *String*,  path to origin file
+- **target**:  *String*,  name of target file
+- **callback**:  *Function*,  Signature: error, data. Data signature:{filename, filepath}
 
 
 <br><br>
