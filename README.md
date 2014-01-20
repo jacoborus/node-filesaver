@@ -53,11 +53,8 @@ Add a new collection
 Example:
 
 ```js
-filesaver.add( 'images', '/path/to/temp/file.jpg', 'avatar.jpg', function (err, data) {
-    console.log( data );
-    // ->
-    // filename: 'avatar_2.jpg',
-    // filepath: './images'
+filesaver.collection( 'documents', './path/to/folder', function () {
+    // do something
 });
 ```
 
@@ -76,7 +73,10 @@ Example:
 
 ```js
 filesaver.add( 'images', '/path/to/temp/file.jpg', 'avatar.jpg', function (err, data) {
-    // do something with err and data
+    console.log( data );
+    // ->
+    // filename: 'avatar_2.jpg',
+    // filepath: './images'
 });
 ```
 
