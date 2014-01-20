@@ -4,9 +4,52 @@ var Filesaver, collections, safename, fs, msgErr, rename;
 safename = require( './safename' );
 fs = require( 'fs' );
 
+/* private methods */
+
 msgErr = function ( msg ) {
 	this.msg = msg;
 	this.name = "Error";
+}
+
+var firstsufix = function (name) {
+	var splitted, suff;
+	splitted = name.split( '_' );
+	if (splitted.length === 1) {
+		return '' + name + '_0';
+	} else {
+		suff = splitted.pop();
+		if (Number(suff) === NaN) {
+			return '' + name + '_0';
+		} else {
+			return name;
+		}
+	}
+}
+
+var add1 = function (name) {
+	var splitted, sufix;
+	splitted = name.split( '_' );
+	sufix = splitted.pop();
+	sufix = 1 + Number( sufix );
+	splitted.push( sufix );
+	return splitted.join( '_' );
+}
+
+var joinplused = function (arr) {
+	arr[0] = add1( arr[0] );
+	return arr.join( '.' );
+}
+
+var splitName = function (name) {
+	var arr, name, ext;
+	arr = name.split('.');
+	name = arr.shift();
+	ext = arr.join('.');
+	return [name, ext];
+}
+
+var renamer = function (name) {
+	return joinplused( splitName( name ));
 }
 
 
@@ -70,7 +113,6 @@ Filesaver.prototype.collection = function (name, folder, callback) {
 }
 
 
-
 /**
  * Add a new file without overwrite anyone
  *
@@ -91,11 +133,13 @@ Filesaver.prototype.collection = function (name, folder, callback) {
  * @param {Function} callback   Signature: error, data. Data signature:{filename, filepath}
  */
 
+
+
 Filesaver.prototype.add = function (collection, origin, target, callback) {
 	// check for valid arguments
 	if (collection && origin && (typeof collection === 'string') && (typeof origin === 'string')) {
 
-		var _this = this, checker, filename, destiny, rename;
+		var _this = this, checker, filename, destiny, rename, toCheck;
 
 		/*
 		 * +1 to filename sufix if file exists, else callback
@@ -104,10 +148,7 @@ Filesaver.prototype.add = function (collection, origin, target, callback) {
 		checker = function (path) {
 			if (fs.existsSync( '' + collections[collection] + '/' + path )) {
 
-				path = path.split( '_' );
-				len = path.length;
-				path[len - 1] = 1 + path[len - 1];
-				checker( path.join( '_' ), callback);
+				checker( renamer(path), callback);
 
 			} else {
 				return _this.replace( collection, origin, path, callback );
@@ -115,7 +156,6 @@ Filesaver.prototype.add = function (collection, origin, target, callback) {
 		};
 
 		rename = function (path) {
-
 			var splitted, name, split_, num;
 
 			splitdot = path.split( '.' );
@@ -135,7 +175,18 @@ Filesaver.prototype.add = function (collection, origin, target, callback) {
 		filename = origin.split('/').pop();
 		destiny = '' + collections[collection] + '/' + target;
 
-		checker( target, callback );
+
+		if (fs.existsSync( destiny )) {
+
+			toCheck = [ firstsufix( splitName(target)[0] ), splitName(target)[1] ].join( '.' );
+
+			checker( toCheck, callback);
+
+		} else {
+			return _this.replace( collection, origin, target, callback );
+		}
+
+
 		
 	} else {
 		console.log('error!');
