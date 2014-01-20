@@ -1,4 +1,4 @@
-// from http://stackoverflow.com/a/18391901/1409080
+
 var defaultDiacriticsRemovalap = [
 	{'base':'A', 'letters':'\u0041\u24B6\uFF21\u00C0\u00C1\u00C2\u1EA6\u1EA4\u1EAA\u1EA8\u00C3\u0100\u0102\u1EB0\u1EAE\u1EB4\u1EB2\u0226\u01E0\u00C4\u01DE\u1EA2\u00C5\u01FA\u01CD\u0200\u0202\u1EA0\u1EAC\u1EB6\u1E00\u0104\u023A\u2C6F'},
 	{'base':'AA','letters':'\uA732'},
@@ -86,30 +86,32 @@ var defaultDiacriticsRemovalap = [
 	{'base':'z','letters':'\u007A\u24E9\uFF5A\u017A\u1E91\u017C\u017E\u1E93\u1E95\u01B6\u0225\u0240\u2C6C\uA763'}
 ];
 
-var diacriticsMap = {};
-for (var i=0; i < defaultDiacriticsRemovalap.length; i++){
-	var letters = defaultDiacriticsRemovalap[i].letters.split("");
-	for (var j=0; j < letters.length ; j++){
-		diacriticsMap[letters[j]] = defaultDiacriticsRemovalap[i].base;
-	}
-}
 
-var removeDiacritics = function (str) {
-	var letters = str.split("");
-	var newStr = "";
-	for(var i=0; i< letters.length; i++) {
-		newStr += letters[i] in diacriticsMap ? diacriticsMap[letters[i]] : letters[i];
+// from http://stackoverflow.com/a/18391901/1409080
+	var diacriticsMap = {};
+	for (var i=0; i < defaultDiacriticsRemovalap.length; i++){
+		var letters = defaultDiacriticsRemovalap[i].letters.split("");
+		for (var j=0; j < letters.length ; j++){
+			diacriticsMap[letters[j]] = defaultDiacriticsRemovalap[i].base;
+		}
 	}
-	return newStr;
-}
+
+	var removeDiacritics = function (str) {
+		var letters = str.split("");
+		var newStr = "";
+		for(var i=0; i< letters.length; i++) {
+			newStr += letters[i] in diacriticsMap ? diacriticsMap[letters[i]] : letters[i];
+		}
+		return newStr;
+	}
 
 // safe name for files 
 module.exports = function ( name ) {
 	var name = removeDiacritics( name );
-    name = name.replace(/ /g, '-');
-    name = name.replace(/[^A-Za-z0-9-_\.]/g, '');
-    name = name.replace(/\.+/g, '.');
-    name = name.replace(/-+/g, '-');
-    name = name.replace(/_+/g, '_');
-    return name;
+	name = name.replace(/ /g, '-');
+	name = name.replace(/[^A-Za-z0-9-_\.]/g, '');
+	name = name.replace(/\.+/g, '.');
+	name = name.replace(/-+/g, '-');
+	name = name.replace(/_+/g, '_');
+	return name;
 }

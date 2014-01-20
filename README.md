@@ -16,39 +16,104 @@ $ npm install filesaver
 
 - Safe filenames
 - Avoid duplicate names
-- Manage collections in folders
-- Stores files by date
-- Folder and filename patterns
-- Classify files by filetype
-
+- Add, overwrite or replace files in collections/folders
 
 ## Usage
 
 ```js
-var Filesaver, filesaver, collections;
-
-Filesaver = require( 'filesaver' );
-
-collections = {
-	images : {
-		path: 'path/to/folder'
-	},
-	documents : {
-		path: 'path/to/documents',
-		pattern : new Date().getFullYear()
-	}
-};
-
-filesaver = Filesaver( collections );
-
-filesaver( 'images', 'path/to/origin', function (err, data) {
-	// do something with data
-	// data signature:
-	// - filename
-	// - path to filename
-});
-
+var Filesaver = require( 'filesaver' );
 ```
+
+## API
+
+### Filesaver(collections)
+
+Filesaver constructor.
+
+Example:
+
+```js
+var collections = {
+    images: './images',
+    books: './books'
+}
+var filesaver = new Filesaver( collections );
+```
+
+
+
+**Parameters**
+
+**collections**:  *Object*,  Collections schema
+
+
+### collection(name, collection, callback)
+
+Add a new collection
+
+Example:
+
+```js
+filesaver.collection( 'documents', )
+```
+
+
+**Parameters**
+
+**name**:  *String*,  name of new collection
+
+**collection**:  *Object*,  Collection schema
+
+**callback**:  *Function*,  no signature callback
+
+
+### add(collection, origin, target, callback)
+
+Add a new file without overwrite anyone
+
+
+**Parameters**
+
+**collection**:  *String*,  Name of collection to insert the file
+
+**origin**:  *String*,  path to origin file
+
+**target**:  *String*,  name target file
+
+**callback**:  *Function*,  Signature: error, data. Data signature:{filename, filepath}
+
+### swap(collection, origin, target, callback)
+
+Remove old file and then add the new one
+
+
+**Parameters**
+
+**collection**:  *String*,  name of collection
+
+**origin**:  *String*,  path to origin file
+
+**target**:  *String*,  name of file to remove
+
+**callback**:  *Function*,  Signature: error, data. Data signature:{filename, filepath}
+
+
+### replace(collection, origin, target, callback)
+
+Write or overwrite file
+
+
+**Parameters**
+
+**collection**:  *String*,  name of parent collection
+
+**origin**:  *String*,  path to origin file
+
+**target**:  *String*,  name of target file
+
+**callback**:  *Function*,  Signature: error, data. Data signature:{filename, filepath}
+
+
 
 <br><br>
 
