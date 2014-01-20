@@ -1,10 +1,13 @@
-var Filesaver, collections, safename, fs;
+var Filesaver, collections, safename, fs, msgErr;
 
 // get dependencies
 safename = require( './safename' );
 fs = require( 'fs' );
 
-
+msgErr = function ( msg ) {
+	this.msg = msg;
+	this.name = "Error";
+}
 
 /**
  * Filesaver constructor.
@@ -89,34 +92,42 @@ Filesaver.prototype.collection = function (name, folder, callback) {
 
 Filesaver.prototype.add = function (collection, origin, target, callback) {
 
-	var _this = this, rename, filename, destiny;
+	// check for valid arguments
+	if (collection && origin && (typeof collection === 'string') && (typeof origin === 'string')) {
 
-	/*
-	 * +1 to filename sufix if file exists, else callback
-	 * @param  {String} path path to check
-	 */
-	rename = function (path) {
-		if (fs.exists( path )) {
-			path = path.split( '_' );
-			len = path.length;
-			path[len - 1] = 1 + path[len - 1];
-			checker( path.join( ), callback);
+		var _this = this, rename, filename, destiny;
+
+		/*
+		 * +1 to filename sufix if file exists, else callback
+		 * @param  {String} path path to check
+		 */
+		rename = function (path) {
+			if (fs.exists( path )) {
+				path = path.split( '_' );
+				len = path.length;
+				path[len - 1] = 1 + path[len - 1];
+				checker( path.join( ), callback);
+			} else {
+				return _this.replace( collection, origin, path, callback );
+			}
+		};
+
+		// get filename and destiny
+		filename = origin.split('/').pop();
+		destiny = '' + collections[collection] + '/' + filename;
+		
+		// check if file exists
+		if (fs.exists( destiny )) {
+			rename( '' + destiny + '_1', callback );
 		} else {
-			return _this.replace( collection, origin, path, callback );
+			// write file
+			return this.replace( collection, origin, destiny, callback );
 		}
-	};
-
-	// get filename and destiny
-	filename = origin.split('/').pop();
-	destiny = '' + collections[collection] + '/' + filename;
-	
-	// check if file exists
-	if (fs.exists( destiny )) {
-		rename( '' + destiny + '_1', callback );
+		
 	} else {
-		// write file
-		return this.replace( collection, origin, destiny, callback );
+		throw new msgErr( 'Collection or origin not valid');
 	}
+
 }
 
 
@@ -142,33 +153,38 @@ Filesaver.prototype.add = function (collection, origin, target, callback) {
  */
 
 Filesaver.prototype.swap = function (collection, origin, target, callback) {
-	// set target
-	var filename = origin.split('/').pop();
-	var destiny = '' + collections[collection] + '/' + filename;
-	var target = '' + collections[collection] + '/' + target;
+	// check for valid arguments
+	if (collection && origin && (typeof collection === 'string') && (typeof origin === 'string')) {
+		// set target
+		var filename = origin.split('/').pop();
+		var destiny = '' + collections[collection] + '/' + filename;
+		var target = '' + collections[collection] + '/' + target;
 
-	// read origin
-	fs.readFile( origin, function (err, data) {
-		if (err) {
-			callback( err );
-		} else {
-			// remove target file
-			fs.unlinkSync( target );
-			// write file
-			fs.writeFile( destiny, data, function (err2) {
-				if (callback) {
-					if (err2) {
-						callback( err2 );
-					} else {
-						callback( null, {
-							filename: filename,
-							filepath: destiny
-						});
+		// read origin
+		fs.readFile( origin, function (err, data) {
+			if (err) {
+				callback( err );
+			} else {
+				// remove target file
+				fs.unlinkSync( target );
+				// write file
+				fs.writeFile( destiny, data, function (err2) {
+					if (callback) {
+						if (err2) {
+							callback( err2 );
+						} else {
+							callback( null, {
+								filename: filename,
+								filepath: destiny
+							});
+						}
 					}
-				}
-			});
-		}
-	});
+				});
+			}
+		});
+	} else {
+		throw new msgErr( 'Collection or origin not valid');
+	}
 }
 
 
@@ -194,27 +210,34 @@ Filesaver.prototype.swap = function (collection, origin, target, callback) {
  */
 
 Filesaver.prototype.replace = function (collection, origin, target, callback) {
-	// set target
-	var destiny = '' + collections[collection] + '/' + target;
+	
+	// check for valid arguments
+	if (collection && origin && (typeof collection === 'string') && (typeof origin === 'string')) {
 
-	// read origin
-	fs.readFile( origin, function (err, data) {
-		if (err) {
-			callback( err );
-		} else {
-			// write file
-			fs.writeFile( destiny, data, function (err2) {
-				if (err2) {
-					callback( err2 );
-				} else {
-					callback( null, {
-						filename: destiny.split('/').pop(),
-						filepath: destiny
-					});
-				}
-			});
-		}
-	});
+		// set target
+		var destiny = '' + collections[collection] + '/' + target;
+
+		// read origin
+		fs.readFile( origin, function (err, data) {
+			if (err) {
+				callback( err );
+			} else {
+				// write file
+				fs.writeFile( destiny, data, function (err2) {
+					if (err2) {
+						callback( err2 );
+					} else {
+						callback( null, {
+							filename: destiny.split('/').pop(),
+							filepath: destiny
+						});
+					}
+				});
+			}
+		});
+	} else {
+		throw new msgErr( 'Collection or origin not valid');
+	}
 }
 
 
