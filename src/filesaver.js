@@ -1,4 +1,4 @@
-var Filesaver, collections, safename, fs, msgErr;
+var Filesaver, collections, safename, fs, msgErr, rename;
 
 // get dependencies
 safename = require( './safename' );
@@ -8,6 +8,7 @@ msgErr = function ( msg ) {
 	this.msg = msg;
 	this.name = "Error";
 }
+
 
 /**
  * Filesaver constructor.
@@ -91,41 +92,54 @@ Filesaver.prototype.collection = function (name, folder, callback) {
  */
 
 Filesaver.prototype.add = function (collection, origin, target, callback) {
-
 	// check for valid arguments
 	if (collection && origin && (typeof collection === 'string') && (typeof origin === 'string')) {
 
-		var _this = this, rename, filename, destiny;
+		var _this = this, checker, filename, destiny, rename;
 
 		/*
 		 * +1 to filename sufix if file exists, else callback
 		 * @param  {String} path path to check
 		 */
-		rename = function (path) {
-			if (fs.exists( path )) {
+		checker = function (path) {
+			if (fs.existsSync( '' + collections[collection] + '/' + path )) {
+
 				path = path.split( '_' );
 				len = path.length;
 				path[len - 1] = 1 + path[len - 1];
-				checker( path.join( ), callback);
+				checker( path.join( '_' ), callback);
+
 			} else {
 				return _this.replace( collection, origin, path, callback );
 			}
 		};
 
+		rename = function (path) {
+
+			var splitted, name, split_, num;
+
+			splitdot = path.split( '.' );
+			name = splitdot.shift();
+			split_ = name.split( '_' );
+			num = split_.pop();
+			num = 1 + num;
+			split_.push( num );
+			name = split_.join( '_' );
+			splitdot.unshift( name );
+
+			checker( splitdot.join( '.' ));
+		}
+
+
 		// get filename and destiny
 		filename = origin.split('/').pop();
-		destiny = '' + collections[collection] + '/' + filename;
-		
-		// check if file exists
-		if (fs.exists( destiny )) {
-			rename( '' + destiny + '_1', callback );
-		} else {
-			// write file
-			return this.replace( collection, origin, destiny, callback );
-		}
+		destiny = '' + collections[collection] + '/' + target;
+
+		checker( target, callback );
 		
 	} else {
-		throw new msgErr( 'Collection or origin not valid');
+		console.log('error!');
+		throw new msgErr( 'Collection or origin not valid' );
 	}
 
 }
