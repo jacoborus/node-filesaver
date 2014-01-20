@@ -69,6 +69,15 @@ Filesaver.prototype.collection = function (name, folder, callback) {
 
 /**
  * Add a new file without overwrite anyone
+ *
+ * Example:
+ *
+ * ```js
+ * filesaver.add( 'images', '/path/to/temp/file.jpg', 'avatar.jpg', function (err, data) {
+ *     // do something with err and data
+ * });
+ * ```
+ * 
  * @param {String}   collection Name of collection to insert the file
  * @param {String}   origin     path to origin file
  * @param {String}   target     name target file

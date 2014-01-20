@@ -69,6 +69,14 @@ filesaver.collection( 'documents', './path/to/folder', function () {
 Add a new file without overwrite anyone
 
 
+Example:
+
+```js
+filesaver.add( 'images', '/path/to/temp/file.jpg', 'avatar.jpg', function (err, data) {
+    // do something with err and data
+});
+```
+
 **Parameters**
 
 - **collection**:  *String*,  Name of collection to insert the file
@@ -80,6 +88,8 @@ Add a new file without overwrite anyone
 ### filesaver#swap(collection, origin, target, callback)
 
 Remove old file and then add the new one
+
+Example:
 
 **Parameters**
 
