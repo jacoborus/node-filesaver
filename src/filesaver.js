@@ -74,7 +74,10 @@ Filesaver.prototype.collection = function (name, folder, callback) {
  *
  * ```js
  * filesaver.add( 'images', '/path/to/temp/file.jpg', 'avatar.jpg', function (err, data) {
- *     // do something with err and data
+ *     console.log( data );
+ *     // ->
+ *     // filename: 'avatar_2.jpg',
+ *     // filepath: './images'
  * });
  * ```
  * 
@@ -172,6 +175,18 @@ Filesaver.prototype.swap = function (collection, origin, target, callback) {
 
 /**
  * Write or overwrite file
+ * 
+ * Example:
+ * 
+ * ```js
+ * filesaver.replace( 'images', '/path/temp/file.jpg', 'avatar.jpg', function (err, data) {
+ *     console.log( data );
+ *     // ->
+ *     // filename: 'avatar.jpg',
+ *     // filepath: './images'
+ *     });
+ * ```
+ * 
  * @param  {String}   collection name of parent collection
  * @param  {String}   origin     path to origin file
  * @param  {String}   target     name of target file

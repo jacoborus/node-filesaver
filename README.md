@@ -53,8 +53,11 @@ Add a new collection
 Example:
 
 ```js
-filesaver.collection( 'documents', './path/to/folder', function () {
-    // do something
+filesaver.add( 'images', '/path/to/temp/file.jpg', 'avatar.jpg', function (err, data) {
+    console.log( data );
+    // ->
+    // filename: 'avatar_2.jpg',
+    // filepath: './images'
 });
 ```
 
@@ -92,7 +95,7 @@ Remove old file and then add the new one
 Example:
 
 ```js
-filesaver.swap( 'images', '/path/to/temp/file.jpg', 'avatar.jpg', function (err, data) {
+filesaver.swap( 'images', '/path/temp/file.jpg', 'avatar.jpg', function (err, data) {
     console.log( data );
     // ->
     // filename: 'file.jpg',
@@ -111,6 +114,16 @@ filesaver.swap( 'images', '/path/to/temp/file.jpg', 'avatar.jpg', function (err,
 
 Write or overwrite file
 
+Example:
+
+```js
+filesaver.replace( 'images', '/path/temp/file.jpg', 'avatar.jpg', function (err, data) {
+    console.log( data );
+    // ->
+    // filename: 'avatar.jpg',
+    // filepath: './images'
+});
+```
 
 **Parameters**
 
