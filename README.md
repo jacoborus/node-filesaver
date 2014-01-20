@@ -91,6 +91,14 @@ Remove old file and then add the new one
 
 Example:
 
+```js
+filesaver.swap( 'images', '/path/to/temp/file.jpg', 'avatar.jpg', function (err, data) {
+    console.log( data );
+    // ->
+    // filename: 'file.jpg',
+    // filepath: './images'
+});
+
 **Parameters**
 
 - **collection**:  *String*,  name of collection

@@ -120,6 +120,17 @@ Filesaver.prototype.add = function (collection, origin, target, callback) {
 
 /**
  * Remove old file and then add the new one
+ *
+ * Example:
+ * 
+ * ```js
+ * filesaver.swap( 'images', '/path/to/temp/file.jpg', 'avatar.jpg', function (err, data) {
+ *     console.log( data );
+ *     // ->
+ *     // filename: 'file.jpg',
+ *     // filepath: './images'
+ * });
+ * ```
  * @param  {String}   collection name of collection
  * @param  {String}   origin     path to origin file
  * @param  {String}   target     name of file to remove
