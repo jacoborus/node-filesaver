@@ -131,6 +131,7 @@ Filesaver.prototype.add = function (collection, origin, target, callback) {
  *     // filepath: './images'
  * });
  * ```
+ * 
  * @param  {String}   collection name of collection
  * @param  {String}   origin     path to origin file
  * @param  {String}   target     name of file to remove
