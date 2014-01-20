@@ -98,6 +98,7 @@ filesaver.swap( 'images', '/path/to/temp/file.jpg', 'avatar.jpg', function (err,
     // filename: 'file.jpg',
     // filepath: './images'
 });
+```
 
 **Parameters**
 
