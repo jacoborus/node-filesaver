@@ -1,8 +1,8 @@
 {
   "name": "filesaver",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Stores files in folders easily",
-  "main": "filesaver.js",
+  "main": "src/filesaver.js",
   "scripts": {
     "test": "mocha --compilers coffee:coffee-script"
   },
@@ -12,13 +12,21 @@
   },
   "keywords": [
     "storage",
-    "fs",
-    "safe filename",
-    "collections"
+    "safe",
+    "filename",
+    "collections",
+    "fs"
   ],
-  "author": "Jacobo Tabernero - jacobo@xarope.eu",
+  "author": "Jacobo Tabernero",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jacoborus/node-filesaver/issues"
+  },
+  "homepage": "https://github.com/jacoborus/node-filesaver",
+  "dependencies": {
+    "mkdirp": "~0.3.5"
+  },
+  "devDependencies" : {
+    "chai": "~1.8.1"
   }
 }

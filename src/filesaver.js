@@ -1,8 +1,9 @@
-var Filesaver, collections, safename, fs, msgErr, rename;
+var Filesaver, safename, fs, msgErr, rename, mkdirp;
 
 // get dependencies
 safename = require( './safename' );
 fs = require( 'fs' );
+mkdirp = require( 'mkdirp' );
 
 /* private methods */
 
@@ -59,25 +60,25 @@ var renamer = function (name) {
  * Example:
  * 
  * ```js
- * var collections = {
+ * var folders = {
  *     images: './images',
  *     books: './books'
  * }
- * var filesaver = new Filesaver( collections );
+ * var filesaver = new Filesaver( folders );
  * ```
  * 
- * @param {Object} collections Collections schema
+ * @param {Object} folders Folders schema
  */
 
-Filesaver = function (cols) {
-	// Store collections in private
-	collections = cols;
+Filesaver = function (folders) {
+	// Store folders in private
+	this.folders = folders;
 
 	// check for existing folders
-	for (col in collections) {
-		if (!fs.existsSync( collections[col] )){
+	for (x in this.folders) {
+		if (!fs.existsSync( folders[x] )){
 			// create folder if not exists
-			fs.mkdir( collections[col] );
+			mkdirp( folders[x] );
 		}
 	}
 };
@@ -85,31 +86,35 @@ Filesaver = function (cols) {
 
 
 /**
- * Add a new collection
+ * Add a new folder
  *
  * Example:
  *
  * ```js
- * filesaver.collection( 'documents', './path/to/folder', function () {
+ * filesaver.addFolder( 'documents', './path/to/folder', function () {
  *     // do something
  * });
  * ```
- * @param  {String}   name       name of new collection
- * @param  {Object}   collection Collection schema
+ * @param  {String}   name       name of new folder
+ * @param  {Object}   path       path to its folder
  * @param  {Function} callback   no signature callback
  */
 
-Filesaver.prototype.collection = function (name, folder, callback) {
-	// create folder if not exists
-	if (!fs.existsSync( folder )) {
-		fs.mkdir( folder );
-	}
-	// add collection
-	collections[name] = folder;
-	// callback if exists
-	if (callback){
-		callback();
-	}
+Filesaver.prototype.addFolder = function (name, path, callback) {
+	var _this = this;
+
+	fs.exists( path, function (exists) {
+		if (!exists) {
+			// create folder if not exists
+			mkdirp( path );
+		}
+		// add folder
+		_this.folders[name] = path;
+		// callback if exists
+		if (callback){
+			callback();
+		}
+	});
 }
 
 
@@ -127,7 +132,7 @@ Filesaver.prototype.collection = function (name, folder, callback) {
  * });
  * ```
  * 
- * @param {String}   collection Name of collection to insert the file
+ * @param {String}   folder Name of folder to insert the file
  * @param {String}   origin     path to origin file
  * @param {String}   target     name target file
  * @param {Function} callback   Signature: error, data. Data signature:{filename, filepath}
@@ -135,9 +140,9 @@ Filesaver.prototype.collection = function (name, folder, callback) {
 
 
 
-Filesaver.prototype.add = function (collection, origin, target, callback) {
+Filesaver.prototype.add = function (folder, origin, target, callback) {
 	// check for valid arguments
-	if (collection && origin && (typeof collection === 'string') && (typeof origin === 'string')) {
+	if (folder && origin && (typeof folder === 'string') && (typeof origin === 'string')) {
 
 		var _this = this, checker, filename, destiny, rename, toCheck;
 
@@ -146,12 +151,12 @@ Filesaver.prototype.add = function (collection, origin, target, callback) {
 		 * @param  {String} path path to check
 		 */
 		checker = function (path) {
-			if (fs.existsSync( '' + collections[collection] + '/' + path )) {
+			if (fs.existsSync( '' + folders[folder] + '/' + path )) {
 
 				checker( renamer(path), callback);
 
 			} else {
-				return _this.replace( collection, origin, path, callback );
+				return _this.replace( folder, origin, path, callback );
 			}
 		};
 
@@ -173,7 +178,7 @@ Filesaver.prototype.add = function (collection, origin, target, callback) {
 
 		// get filename and destiny
 		filename = origin.split('/').pop();
-		destiny = '' + collections[collection] + '/' + target;
+		destiny = '' + folders[folder] + '/' + target;
 
 
 		if (fs.existsSync( destiny )) {
@@ -183,14 +188,13 @@ Filesaver.prototype.add = function (collection, origin, target, callback) {
 			checker( toCheck, callback);
 
 		} else {
-			return _this.replace( collection, origin, target, callback );
+			return _this.replace( folder, origin, target, callback );
 		}
 
 
 		
 	} else {
-		console.log('error!');
-		throw new msgErr( 'Collection or origin not valid' );
+		throw new msgErr( 'Folder or origin not valid' );
 	}
 
 }
@@ -207,48 +211,22 @@ Filesaver.prototype.add = function (collection, origin, target, callback) {
  *     console.log( data );
  *     // ->
  *     // filename: 'file.jpg',
- *     // filepath: './images'
+ *     // filepath: './images/file.jpg'
  * });
  * ```
  * 
- * @param  {String}   collection name of collection
+ * @param  {String}   folder     name of folder
  * @param  {String}   origin     path to origin file
  * @param  {String}   target     name of file to remove
  * @param  {Function} callback   Signature: error, data. Data signature:{filename, filepath}
  */
 
-Filesaver.prototype.swap = function (collection, origin, target, callback) {
-	// check for valid arguments
-	if (collection && origin && (typeof collection === 'string') && (typeof origin === 'string')) {
-		// set target
-		var filename = origin.split('/').pop();
-		var destiny = '' + collections[collection] + '/' + filename;
-		var target = '' + collections[collection] + '/' + target;
-
-		// read origin
-		fs.readFile( origin, function (err, data) {
-			if (err) {
-				callback( err );
-			} else {
-				// remove target file
-				fs.unlinkSync( target );
-				// write file
-				fs.writeFile( destiny, data, function (err2) {
-					if (callback) {
-						if (err2) {
-							callback( err2 );
-						} else {
-							callback( null, {
-								filename: filename,
-								filepath: destiny
-							});
-						}
-					}
-				});
-			}
+Filesaver.prototype.swap = function (folder, origin, target, callback) {
+	var _this = this;
+	if (target) {
+		fs.unlink( target, function(){
+			_this.replace( folder, origin, callback );
 		});
-	} else {
-		throw new msgErr( 'Collection or origin not valid');
 	}
 }
 
@@ -264,44 +242,53 @@ Filesaver.prototype.swap = function (collection, origin, target, callback) {
  *     console.log( data );
  *     // ->
  *     // filename: 'avatar.jpg',
- *     // filepath: './images'
+ *     // filepath: './images/avatar.jpg'
  *     });
  * ```
  * 
- * @param  {String}   collection name of parent collection
+ * @param  {String}   folder     name of parent folder folder
  * @param  {String}   origin     path to origin file
  * @param  {String}   target     name of target file
  * @param  {Function} callback   Signature: error, data. Data signature:{filename, filepath}
  */
 
-Filesaver.prototype.replace = function (collection, origin, target, callback) {
+Filesaver.prototype.replace = function (folder, origin, target, callback) {
 	
 	// check for valid arguments
-	if (collection && origin && (typeof collection === 'string') && (typeof origin === 'string')) {
+	if (folder && origin && (typeof folder === 'string') && (typeof origin === 'string')) {
+		// check for existing folder
+		if (this.folders[folder]) {
 
-		// set target
-		var destiny = '' + collections[collection] + '/' + target;
+			// check if target is callback
+			if (!callback && typeof target === 'function') {
+				var callback = target;
+				target = origin.split( '/' ).pop();
+			} else if (!target) {
+				var target = target = origin.split( '/' ).pop();
+			}
 
-		// read origin
-		fs.readFile( origin, function (err, data) {
-			if (err) {
-				callback( err );
-			} else {
-				// write file
-				fs.writeFile( destiny, data, function (err2) {
-					if (err2) {
-						callback( err2 );
-					} else {
-						callback( null, {
-							filename: destiny.split('/').pop(),
+
+			// set target
+			var destiny = '' + this.folders[folder] + '/' + target;
+			// write file
+			fs.writeFile(
+				destiny,
+				fs.readFileSync( origin ),
+				function (err) {
+					if (callback) {
+						callback( err, {
+							filename: destiny.split( '/' ).pop(),
 							filepath: destiny
 						});
 					}
-				});
-			}
-		});
+				}
+			);
+
+		} else if (callback) {
+			callback( 'invalid folder' );
+		}
 	} else {
-		throw new msgErr( 'Collection or origin not valid');
+		throw new msgErr( 'folder or origin not valid' );
 	}
 }
 

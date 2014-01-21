@@ -1,7 +1,8 @@
 node-filesaver
 ==============
 
-Stores files in folders easily with node.js
+Stores files in folders easily with node.js.
+**NOT READY FOR PRODUCTION**
 
 
 ## Installation
