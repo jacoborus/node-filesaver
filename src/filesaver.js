@@ -95,7 +95,7 @@ Filesaver = function (folders) {
  *     // do something
  * });
  * ```
- * @param  {String}   name       name of new folder
+ * @param  {String}   name       name of new folder collection
  * @param  {Object}   path       path to its folder
  * @param  {Function} callback   no signature callback
  */
@@ -128,13 +128,13 @@ Filesaver.prototype.addFolder = function (name, path, callback) {
  *     console.log( data );
  *     // ->
  *     // filename: 'avatar_2.jpg',
- *     // filepath: './images'
+ *     // filepath: './images/avatar_2.jpg'
  * });
  * ```
  * 
  * @param {String}   folder Name of folder to insert the file
  * @param {String}   origin     path to origin file
- * @param {String}   target     name target file
+ * @param {String}   target     name of target file
  * @param {Function} callback   Signature: error, data. Data signature:{filename, filepath}
  */
 
@@ -207,7 +207,7 @@ Filesaver.prototype.add = function (folder, origin, target, callback) {
  * Example:
  * 
  * ```js
- * filesaver.swap( 'images', '/path/to/temp/file.jpg', 'avatar.jpg', function (err, data) {
+ * filesaver.swap( 'images', '/path/to/temp/file.jpg', 'willBeRemoved.jpg', function (err, data) {
  *     console.log( data );
  *     // ->
  *     // filename: 'file.jpg',

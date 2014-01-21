@@ -27,48 +27,50 @@ var Filesaver = require( 'filesaver' );
 
 ## API
 
-### Filesaver#(collections)
+### Filesaver(folders)
 
-Filesaver constructor.
+Filesaver constructor
 
 Example:
 
 ```js
-var collections = {
+var folders = {
     images: './images',
     books: './books'
 }
-var filesaver = new Filesaver( collections );
+var filesaver = new Filesaver( folders );
 ```
-
 
 **Parameters**
 
-**collections**:  *Object*,  Collections schema
+- **folders**:  *Object*,  Folders schema
 
 
-### filesaver#collection(name, collection, callback)
 
-Add a new collection
+### addFolder(name, path, callback)
+
+Add a new folder
 
 Example:
 
 ```js
-filesaver.collection( 'documents', './path/to/folder', function () {
-    // do something
+filesaver.addFolder( 'documents', './path/to/folder', function () {
+// do something
 });
 ```
 
+
 **Parameters**
-- **name**:  *String*,  name of new collection
-- **collection**:  *Object*,  Collection schema
+
+- **name**:  *String*,  name of new folder collection
+- **path**:  *Object*,  path to its folder
 - **callback**:  *Function*,  no signature callback
 
 
-### filesaver#add(collection, origin, target, callback)
+
+### add(folder, origin, target, callback)
 
 Add a new file without overwrite anyone
-
 
 Example:
 
@@ -77,41 +79,44 @@ filesaver.add( 'images', '/path/to/temp/file.jpg', 'avatar.jpg', function (err, 
     console.log( data );
     // ->
     // filename: 'avatar_2.jpg',
-    // filepath: './images'
+    // filepath: './images/avatar_2.jpg'
 });
 ```
 
 **Parameters**
 
-- **collection**:  *String*,  Name of collection to insert the file
+- **folder**:  *String*,  Name of folder to insert the file
 - **origin**:  *String*,  path to origin file
-- **target**:  *String*,  name target file
+- **target**:  *String*,  name of target file
 - **callback**:  *Function*,  Signature: error, data. Data signature:{filename, filepath}
 
 
-### filesaver#swap(collection, origin, target, callback)
+
+### swap(folder, origin, target, callback)
 
 Remove old file and then add the new one
 
 Example:
 
 ```js
-filesaver.swap( 'images', '/path/temp/file.jpg', 'avatar.jpg', function (err, data) {
+filesaver.swap( 'images', '/path/to/temp/file.jpg', 'willBeRemoved.jpg', function (err, data) {
     console.log( data );
     // ->
     // filename: 'file.jpg',
-    // filepath: './images'
+    // filepath: './images/file.jpg'
 });
 ```
 
 **Parameters**
 
-- **collection**:  *String*,  name of collection
+- **folder**:  *String*,  name of folder
 - **origin**:  *String*,  path to origin file
 - **target**:  *String*,  name of file to remove
 - **callback**:  *Function*,  Signature: error, data. Data signature:{filename, filepath}
 
-### filesaver#replace(collection, origin, target, callback)
+
+
+### replace(folder, origin, target, callback)
 
 Write or overwrite file
 
@@ -122,16 +127,17 @@ filesaver.replace( 'images', '/path/temp/file.jpg', 'avatar.jpg', function (err,
     console.log( data );
     // ->
     // filename: 'avatar.jpg',
-    // filepath: './images'
+    // filepath: './images/avatar.jpg'
 });
 ```
 
 **Parameters**
 
-- **collection**:  *String*,  name of parent collection
+- **folder**:  *String*,  name of parent folder folder
 - **origin**:  *String*,  path to origin file
 - **target**:  *String*,  name of target file
 - **callback**:  *Function*,  Signature: error, data. Data signature:{filename, filepath}
+
 
 
 <br><br>
