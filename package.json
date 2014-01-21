@@ -4,7 +4,7 @@
   "description": "Stores files in folders easily",
   "main": "src/filesaver.js",
   "scripts": {
-    "test": "mocha --compilers coffee:coffee-script"
+    "test": "node ./node_modules/mocha/bin/mocha --compilers coffee:coffee-script"
   },
   "repository": {
     "type": "git",
@@ -24,9 +24,11 @@
   },
   "homepage": "https://github.com/jacoborus/node-filesaver",
   "dependencies": {
-    "mkdirp": "~0.3.5"
+    "mkdirp": "~0.3.5",
+    "mocha": "~1.17.0"
   },
-  "devDependencies" : {
-    "chai": "~1.8.1"
+  "devDependencies": {
+    "chai": "~1.8.1",
+    "mocha": "latest"
   }
 }
