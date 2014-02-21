@@ -27,9 +27,9 @@ describe 'Filesaver constructor', ->
 		expect( filesaver.add ).to.be.a 'function'
 		expect( filesaver.swap ).to.be.a 'function'
 		expect( filesaver.replace ).to.be.a 'function'
-	
+
 	it 'Filesaver constructor create folders if necesary', ->
-		expect( fs.existsSync( './uploads/books' )).to.equal true
+		expect( fs.existsSync './uploads/books' ).to.equal true
 
 describe 'filesaver#addFolder', ->
 
@@ -38,20 +38,20 @@ describe 'filesaver#addFolder', ->
 	it 'add a new folder to filesaver.folders', ->
 		expect( filesaver.folders.things ).to.equal './uploads/things'
 	it 'create folder if necessary', ->
-		expect( fs.existsSync( './uploads/things' )).to.equal true
+		expect( fs.existsSync './uploads/things' ).to.equal true
 
 
 
 describe 'filesaver#replace', ->
 
 	it 'saves a file at target argument', (done) ->
-		filesaver.replace 'books', './LICENSE', 'license', ->
-			expect( fs.existsSync('./uploads/books/license') ).to.equal true
+		filesaver.replace 'books', './testfiles/uno', 'UNO', ->
+			expect( fs.existsSync './uploads/books/UNO' ).to.equal true
 			done()
-	
+
 	it 'if target is ommited: saves file with same name as origin file', (done) ->
-		filesaver.replace 'books', './README.md', ->
-			expect( fs.existsSync('./uploads/books/README.md') ).to.equal true
+		filesaver.replace 'books', './testfiles/dos', ->
+			expect( fs.existsSync './uploads/books/dos' ).to.equal true
 			done()
 			deleteFolderRecursive './uploads'
 
@@ -59,8 +59,8 @@ describe 'filesaver#replace', ->
 describe 'filesaver#swap', ->
 
 	it 'remove the target file', (done) ->
-		filesaver.swap 'books', './README.md', 'license', ->
-			expect( fs.existsSync( './uploads/books/license' )).to.equal false
+		filesaver.swap 'books', './testfiles/tres', 'dos', ->
+			expect( fs.existsSync './uploads/books/dos' ).to.equal false
 			done()
 
 describe 'filesaver#add', ->

@@ -58,7 +58,7 @@ var renamer = function (name) {
  * Filesaver constructor.
  *
  * Example:
- * 
+ *
  * ```js
  * var folders = {
  *     images: './images',
@@ -66,7 +66,7 @@ var renamer = function (name) {
  * }
  * var filesaver = new Filesaver( folders );
  * ```
- * 
+ *
  * @param {Object} folders Folders schema
  */
 
@@ -131,7 +131,7 @@ Filesaver.prototype.addFolder = function (name, path, callback) {
  *     // filepath: './images/avatar_2.jpg'
  * });
  * ```
- * 
+ *
  * @param {String}   folder Name of folder to insert the file
  * @param {String}   origin     path to origin file
  * @param {String}   target     name of target file
@@ -192,7 +192,7 @@ Filesaver.prototype.add = function (folder, origin, target, callback) {
 		}
 
 
-		
+
 	} else {
 		throw new msgErr( 'Folder or origin not valid' );
 	}
@@ -205,7 +205,7 @@ Filesaver.prototype.add = function (folder, origin, target, callback) {
  * Remove old file and then add the new one
  *
  * Example:
- * 
+ *
  * ```js
  * filesaver.swap( 'images', '/path/to/temp/file.jpg', 'willBeRemoved.jpg', function (err, data) {
  *     console.log( data );
@@ -214,7 +214,7 @@ Filesaver.prototype.add = function (folder, origin, target, callback) {
  *     // filepath: './images/file.jpg'
  * });
  * ```
- * 
+ *
  * @param  {String}   folder     name of folder
  * @param  {String}   origin     path to origin file
  * @param  {String}   target     name of file to remove
@@ -234,9 +234,9 @@ Filesaver.prototype.swap = function (folder, origin, target, callback) {
 
 /**
  * Write or overwrite file
- * 
+ *
  * Example:
- * 
+ *
  * ```js
  * filesaver.replace( 'images', '/path/temp/file.jpg', 'avatar.jpg', function (err, data) {
  *     console.log( data );
@@ -245,7 +245,7 @@ Filesaver.prototype.swap = function (folder, origin, target, callback) {
  *     // filepath: './images/avatar.jpg'
  *     });
  * ```
- * 
+ *
  * @param  {String}   folder     name of parent folder folder
  * @param  {String}   origin     path to origin file
  * @param  {String}   target     name of target file
@@ -253,7 +253,7 @@ Filesaver.prototype.swap = function (folder, origin, target, callback) {
  */
 
 Filesaver.prototype.replace = function (folder, origin, target, callback) {
-	
+
 	// check for valid arguments
 	if (folder && origin && (typeof folder === 'string') && (typeof origin === 'string')) {
 		// check for existing folder
@@ -270,19 +270,15 @@ Filesaver.prototype.replace = function (folder, origin, target, callback) {
 
 			// set target
 			var destiny = '' + this.folders[folder] + '/' + target;
-			// write file
-			fs.writeFile(
-				destiny,
-				fs.readFileSync( origin ),
-				function (err) {
-					if (callback) {
-						callback( err, {
-							filename: destiny.split( '/' ).pop(),
-							filepath: destiny
-						});
-					}
+			// move file
+			fs.rename(origin, destiny, function (err) {
+				if (callback) {
+					callback( err, {
+						filename: destiny.split( '/' ).pop(),
+						filepath: destiny
+					});
 				}
-			);
+			});
 
 		} else if (callback) {
 			callback( 'invalid folder' );

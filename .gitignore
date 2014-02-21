@@ -1,2 +1,3 @@
 .subl
 node_modules
+test/*.js
