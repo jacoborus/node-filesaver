@@ -10,11 +10,9 @@ touch uno
 touch dos
 cd ..
 
-echo 'Compiling coffee tests...'
-node ./node_modules/coffee-script/bin/coffee -c ./test/*.coffee
 echo 'Run tests'
 node ./node_modules/mocha/bin/mocha
 echo 'Removing files'
-rm ./test/*.js
+
 rm ./testfiles -rf
 rm ./uploads -rf
