@@ -8,14 +8,14 @@ Filesaver API
 - [add](#add)
 
 <a name="Filesaver"></a>
-Filesaver( folders )
+Filesaver( options )
 ------------------------------------------------------------
 
 Filesaver constructor.
 
 **Parameters:**
 
-- **folders** *Object*: Folders schema
+- **options** *Object*: folders and safenames
 
 
 Options:

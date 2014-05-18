@@ -98,7 +98,7 @@ var checker = function (folder, oldPath, newPath, callback) {
  * });
  * ```
  *
- * @param {Object} folders Folders schema
+ * @param {Object} options folders and safenames
  */
 
 var Filesaver = function (options) {
