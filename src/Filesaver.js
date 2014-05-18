@@ -51,12 +51,12 @@ var checkSafeName = function (route) {
  * check if params are right
  */
 var checker = function (folder, oldPath, newPath, callback) {
-	if (!callback && typeof newPath === 'function') {
-		callback = newPath;
+	var cb = callback || function () {};
+	if (typeof newPath === 'function') {
+		cb = newPath;
 		newPath = oldPath.split( '/' ).pop();
 	} else if (!newPath) {
 		newPath = oldPath.split( '/' ).pop();
-		callback = function () {};
 	}
 	// check for valid arguments
 	if (folder && oldPath && (typeof folder === 'string') && (typeof oldPath === 'string') && fs.existsSync( oldPath )) {
@@ -65,13 +65,13 @@ var checker = function (folder, oldPath, newPath, callback) {
 			// set target
 			newPath = path.resolve( this.folders[folder], newPath );
 			newPath = checkSafeName.call( this, newPath );
-			return {newPath: newPath, callback: callback};
+			return {newPath: newPath, callback: cb};
 		} else {
-			callback( 'invalid folder' );
+			cb( 'invalid folder' );
 			return false;
 		}
 	} else {
-		callback( 'folder or origin not valid' );
+		cb( 'folder or origin not valid' );
 		return false;
 	}
 };
@@ -175,9 +175,7 @@ Filesaver.prototype.put = function (folder, oldPath, newPath, callback) {
 	var data = checker.call( this, folder, oldPath, newPath, callback );
 
 	if (data) {
-		newPath = data.newPath;
-		callback = data.callback;
-		move( oldPath, newPath, callback );
+		move( oldPath, data.newPath, data.callback );
 	}
 };
 
@@ -208,9 +206,8 @@ Filesaver.prototype.add = function (folder, oldPath, newPath, callback) {
 	var data = checker.call( this, folder, oldPath, newPath, callback );
 
 	if (data) {
-		callback = data.callback;
 		newPath = tools.finalName( data.newPath );
-		move( oldPath, newPath, callback );
+		move( oldPath, newPath, data.callback );
 	}
 };
 

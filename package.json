@@ -1,6 +1,6 @@
 {
   "name": "filesaver",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Stores files in folders easily",
   "main": "./src/Filesaver.js",
   "scripts": {
