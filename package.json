@@ -1,11 +1,11 @@
 {
   "name": "filesaver",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Stores files in folders easily",
   "main": "./src/Filesaver.js",
   "scripts": {
     "test": "node ./node_modules/mocha/bin/mocha",
-    "build-docs": "node ./devtools/createdocs.js && cat ./docs/readme.md ./docs/api.md ./docs/license.md > ./README.md"
+    "build-docs": "node ./devtools/createdocs.js && cat ./docs/readme.md ./docs/api.md ./docs/footer.md > ./README.md"
   },
   "repository": {
     "type": "git",

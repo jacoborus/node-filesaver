@@ -1,3 +1,20 @@
+
+
+Tests
+-----
+
+```
+npm install && npm test
+```
+
+Build API docs
+--------------
+
+```
+npm install && npm run build-docs
+```
+
+
 <br><br>
 
 ---

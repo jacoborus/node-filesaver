@@ -1,7 +1,7 @@
 node-filesaver
 ==============
 
-Stores files in folders easily with node.js
+Manage collections of files easily with node.js
 
 
 ## Installation
@@ -14,9 +14,9 @@ $ npm install filesaver
 
 ## Features
 
-- Safe filenames
-- Avoid duplicate names
-- Add, overwrite or replace files in collections/folders
+- Add files avoiding duplicated names
+- Put files overwriting old ones if exists
+- Use safe file names
 
 ## Example
 
