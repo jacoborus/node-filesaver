@@ -1,4 +1,85 @@
+var fs = require('fs');
 
+/*!
+ * add 1 to suffix number
+ * @param {String} name file basename
+ * @return {String} name with addition
+ */
+var addOne = function (name) {
+	name = name.split( '_' );
+	var n = Number( name.pop()) + 1;
+	name.push( n );
+	return name.join( '_' );
+};
+
+
+/*!
+ * detect if name has a number suffix after '_'
+ * (example: picture_5.jpg)
+ * @param  {string}  name basename to examinate
+ * @return {Boolean|Number}      if has not suffix: false, else: name with addition
+ */
+var hasSuffix = function (name) {
+	var suffix, splitted;
+	if (!isNaN( name )) {
+		return false;
+	} else {
+		splitted = name.split( '_' );
+		if (splitted.length > 1) {
+			suffix = splitted.pop();
+			if (isNaN( suffix )) {
+				return false;
+			} else {
+				return addOne( name );
+			}
+		} else {
+			return false;
+		}
+	}
+};
+
+/*!
+ * separate basename from file path and send it to rename
+ * @param  {String} route route of the file
+ * @return {String}       new name
+ */
+var newName = function ( route ) {
+	// get filename
+	route = route.split( '/' );
+	var filename = route.pop();
+	var splitted = filename.split( '.' );
+	var basename = splitted.shift();
+	var ext = splitted.join( '.' );
+	var suffix = hasSuffix( basename );
+	// check if filefileName has suffix
+	if (suffix) {
+		basename = suffix;
+	} else {
+		basename = basename + '_1';
+	}
+	filename = [basename, ext].join( '.' );
+	route.push( filename );
+	return route.join('/');
+};
+
+/*!
+ * detects if file route exist and send it to rename
+ * @param  {String} route file path
+ * @return {String}       unique path
+ */
+var finalName = function (route) {
+	if (fs.existsSync( route )) {
+		return finalName( newName( route ));
+	} else {
+		return route;
+	}
+};
+
+
+
+/*
+SAFENAME
+ */
 var defaultDiacriticsRemovalap = [
 	{'base':'A', 'letters':'\u0041\u24B6\uFF21\u00C0\u00C1\u00C2\u1EA6\u1EA4\u1EAA\u1EA8\u00C3\u0100\u0102\u1EB0\u1EAE\u1EB4\u1EB2\u0226\u01E0\u00C4\u01DE\u1EA2\u00C5\u01FA\u01CD\u0200\u0202\u1EA0\u1EAC\u1EB6\u1E00\u0104\u023A\u2C6F'},
 	{'base':'AA','letters':'\uA732'},
@@ -105,13 +186,19 @@ var defaultDiacriticsRemovalap = [
 		return newStr;
 	}
 
-// safe name for files 
-module.exports = function ( name ) {
+// safe name for files
+var safename = function ( name ) {
 	var name = removeDiacritics( name );
-	name = name.replace(/ /g, '-');
+	name = name.replace(/ /g, '_');
 	name = name.replace(/[^A-Za-z0-9-_\.]/g, '');
 	name = name.replace(/\.+/g, '.');
 	name = name.replace(/-+/g, '-');
 	name = name.replace(/_+/g, '_');
 	return name;
 }
+
+
+module.exports= {
+	finalName : finalName,
+	safename : safename
+};
