@@ -2,8 +2,9 @@
 
 var mkdirp = require('mkdirp'),
 	fs = require('fs'),
-	tools = require('./tools'),
-	path = require('path');
+	changeName = require('./changename'),
+	path = require('path'),
+	safename = require('safename');
 
 
 
@@ -35,10 +36,7 @@ var checkSafeName = function (route) {
 	if ( this.safenames ) {
 		route = route.split( '/' );
 		var name = route.pop();
-		var ext = name.split( '.' );
-		var basename = ext.shift();
-		basename = tools.safename( basename );
-		name = [basename, ext].join( '.' );
+		name = safename( name );
 		route.push( name );
 		return route.join( '/' );
 	} else {
@@ -206,7 +204,7 @@ Filesaver.prototype.add = function (folder, oldPath, newPath, callback) {
 	var data = checker.call( this, folder, oldPath, newPath, callback );
 
 	if (data) {
-		newPath = tools.finalName( data.newPath );
+		newPath = changeName( data.newPath );
 		move( oldPath, newPath, data.callback );
 	}
 };
