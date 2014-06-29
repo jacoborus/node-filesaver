@@ -3,6 +3,8 @@ node-filesaver
 
 Manage collections of files easily with node.js
 
+[![Build Status](https://travis-ci.org/jacoborus/node-filesaver.svg?branch=master)](https://travis-ci.org/jacoborus/node-filesaver)
+
 
 ## Installation
 
